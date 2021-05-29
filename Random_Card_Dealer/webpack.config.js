@@ -1,7 +1,6 @@
 const path = require('path');
 
-const PrettierPlugin = require("./_utils/prettier.js");
-const cleanStack = require("./_utils/clean-stack.js");
+const PrettierPlugin = require("prettier-webpack-plugin");
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const WebpackErrorReporting = require('bc-webpack-error-reporting-plugin');
@@ -16,7 +15,7 @@ if(process.env.GITPOD_WORKSPACE_URL){
 
 module.exports = {
   mode: 'development',
-  entry: ['./src/app.js'],
+  entry: ['./src/main.js'],
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: 'main.bundle.js',
@@ -25,8 +24,7 @@ module.exports = {
   devtool: "source-map",
   devServer: {
     historyApiFallback: true,
-    public: publicUrl,
-    stats: 'errors-warnings',
+    public: publicUrl
   },
   module: {
     rules: [
@@ -66,16 +64,12 @@ module.exports = {
       language: "html,css,javascript",
       framework: "vanillajs"
     }),
-    new FriendlyErrorsWebpackPlugin({
-        // additionalFormatters: [cleanStack]
-    }),
+    new PrettierPlugin(),
+    new FriendlyErrorsWebpackPlugin(),
     new ErrorOverlayPlugin(),
     new HtmlWebpackPlugin({
-        filename: "index.html",
-        template: "src/index.html"
-    }),
-    new PrettierPlugin({
-        failSilently: true
-    }),
+      filename: "index.html",
+      template: "src/index.html"
+    })
   ]
 };
